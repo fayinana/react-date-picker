@@ -1,0 +1,39 @@
+name: React Package CI/CD
+
+on:
+  push:
+    branches:
+      - main # Trigger on push to the main branch
+  pull_request:
+    branches:
+      - main # Trigger on pull request to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use the latest Ubuntu for the CI environment
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2 # This checks out your code from GitHub
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3 # This sets up Node.js in the CI environment
+        with:
+          node-version: "16" # Specify the Node.js version (e.g., 16)
+
+      - name: Install Dependencies
+        run: npm install # Install all the dependencies in your package.json
+
+      - name: Run Tests
+        run: npm test # Run tests (if you have any set up with Jest)
+
+      - name: Lint Code
+        run: npm run lint # Run linting (you would have this script set in package.json)
+
+      - name: Build Package
+        run: npm run build # Build the package (compiles TypeScript to JavaScript)
+
+      - name: Publish to npm
+        run: npm publish --access public # Publish the package to npm (to the public registry)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Use npm token for authentication during publish
